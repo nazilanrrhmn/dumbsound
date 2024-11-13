@@ -21,8 +21,18 @@ export const updateProfile = async (
     },
     data: {
       fullname: data.fullname,
-      avatar: data.avatarUrl,
+      phone: data.phone,
+      address: data.address,
+      avatar: data.avatar,
       gender: data.gender,
+      user: {
+        update: {
+          username: data.username,
+        },
+      },
+    },
+    include: {
+      user: true,
     },
   });
 };

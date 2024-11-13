@@ -1,37 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { AddMusicDto } from "../dto/music";
 
 const prisma = new PrismaClient();
 
-interface CreateMusicData {
-  title: string;
-  fileUrl: string;
-  thumbnails: string;
-  year: number;
-  artistId: number;
-}
-
-export const createMusic = async (data: CreateMusicData) => {
+export const createMusic = async (addMusicDto: AddMusicDto) => {
   return await prisma.music.create({
-    data: {
-      title: data.title,
-      artistId: data.artistId,
-      fileUrl: data.fileUrl,
-      thumbnails: data.thumbnails,
-      year: data.year,
-    },
+    data: addMusicDto,
   });
 };
-
-// export const createMusic = async (data: {
-//   title: string;
-//   artistId: number;
-//   fileUrl: string;
-//   thumbnails: string;
-// }) => {
-//   return await prisma.music.create({
-//     data: { ...data },
-//   });
-// };
 
 export const getMusicById = async (id: number) => {
   return await prisma.music.findUnique({
@@ -40,5 +16,9 @@ export const getMusicById = async (id: number) => {
 };
 
 export const getAllMusic = async () => {
-  return await prisma.music.findMany();
+  return await prisma.music.findMany({
+    include: {
+      artist: true,
+    },
+  });
 };

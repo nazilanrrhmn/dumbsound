@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as profileControllers from "../controllers/profile";
-import { upload } from "../middlewares/upload";
+import upload from "../middlewares/upload";
 
 const profileRouter = Router();
 

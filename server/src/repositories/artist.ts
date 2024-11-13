@@ -1,11 +1,12 @@
 import { PrismaClient, Artist } from "@prisma/client";
+import { CreateArtistDto } from "../dto/artist";
 
 const prisma = new PrismaClient();
 
 // Create a new artist
-export const createArtist = async (data: Omit<Artist, "id">) => {
+export const createArtist = async (addArtistDto: CreateArtistDto) => {
   return await prisma.artist.create({
-    data,
+    data: addArtistDto,
   });
 };
 

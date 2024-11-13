@@ -82,9 +82,9 @@ enum typeArtist {
 model Artist {
   id          Int      @id @default(autoincrement())
   name        String
-  age String
+  age Int?
   type typeArtist
-  bio String
+  bio String?
 
   music       Music[]
 }

@@ -1,16 +1,23 @@
 import { Request, Response } from "express";
 import * as artistService from "../services/artist";
+import { addArtistSchema } from "../utils/schemas/artist";
 
 // Controller to create a new artist
 export const createArtist = async (req: Request, res: Response) => {
-  const { name, age, type, bio } = req.body;
-
   try {
-    const artist = await artistService.createArtist({ name, age, type, bio });
-    res.status(201).json(artist);
+    const body = req.body;
+
+    const value = await addArtistSchema.validateAsync(body);
+    const artist = await artistService.createArtist(value);
+
+    res.json({
+      message: "Create artist successfuly",
+      artist,
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error });
+    const err = error as Error;
+    res.status(500).json({ message: err.message });
   }
 };
 

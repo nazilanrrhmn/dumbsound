@@ -1,14 +1,20 @@
 import { Router } from "express";
 import * as musicControllers from "../controllers/music";
-import { upload } from "../middlewares/upload";
+import upload from "../middlewares/upload";
 
 const musicRouter = Router();
 
 musicRouter.post(
   "/create",
   upload.fields([
-    { name: "fileUrl", maxCount: 1 },
-    { name: "thumbnails", maxCount: 1 },
+    {
+      name: "music",
+      maxCount: 1,
+    },
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    },
   ]),
   musicControllers.createMusic
 );

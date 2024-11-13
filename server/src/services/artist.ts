@@ -1,15 +1,9 @@
 import * as artistRepository from "../repositories/artist";
-
-interface CreateArtistData {
-  name: string;
-  age: string;
-  type: "SOLO" | "DUO" | "GROUP";
-  bio: string;
-}
+import { CreateArtistDto } from "../dto/artist";
 
 // Create a new artist
-export const createArtist = async (data: CreateArtistData) => {
-  return await artistRepository.createArtist(data);
+export const createArtist = async (body: CreateArtistDto) => {
+  return await artistRepository.createArtist(body);
 };
 
 // Get an artist by ID
@@ -29,7 +23,7 @@ export const getAllArtists = async () => {
 // Update an artist
 export const updateArtist = async (
   id: number,
-  data: Partial<CreateArtistData>
+  data: Partial<CreateArtistDto>
 ) => {
   const artist = await artistRepository.getArtistById(id);
   if (!artist) {

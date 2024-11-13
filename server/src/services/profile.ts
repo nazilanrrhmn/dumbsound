@@ -1,4 +1,4 @@
-import cloudinary from "../config/cloudinary";
+import { cloudinary } from "../libs/cloudinary";
 import fs from "fs";
 import * as profileRepositories from "../repositories/profile";
 import { UpdateProfileDto } from "../dto/profile";
@@ -8,20 +8,10 @@ export const getProfileByUserId = async (userId: number) => {
 };
 
 export const updateProfile = async (userId: number, data: UpdateProfileDto) => {
-  const { username, fullname, gender, phone, address, avatarFile } = data;
+  const { username, fullname, gender, phone, address, avatarUrl } = data;
   console.log(data);
 
   try {
-    let avatarUrl;
-
-    if (avatarFile) {
-      const avatarResult = await cloudinary.uploader.upload(avatarFile.path, {
-        resource_type: "image",
-      });
-      avatarUrl = avatarResult.secure_url;
-      fs.unlinkSync(avatarFile.path);
-    }
-
     return await profileRepositories.updateProfile(userId, {
       username,
       fullname,
