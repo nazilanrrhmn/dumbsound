@@ -56,3 +56,26 @@ export const updateUser = async (id: number, data: Partial<UpdateUserDto>) => {
     },
   });
 };
+
+export const findUserById = async (id: number) => {
+  return prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      username: true,
+      profile: true,
+    },
+  });
+};
+
+export const getUserByUsername = async (username: string) => {
+  return prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
+};

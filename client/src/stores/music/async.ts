@@ -32,20 +32,35 @@ export const addMusic = createAsyncThunk<IMusic, AddMusicDTO>(
   "music/addMusic",
   async (data, thunkAPI) => {
     try {
-      const res = await api.post("/music/create", data);
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "fileUrl" || key === "thumbnails") {
+          if (value instanceof FileList) {
+            Array.from(value).forEach((file) => formData.append(key, file));
+          }
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+
+      const { data: response } = await api.post("/music/create", formData);
+
+      // Show success notification using SweetAlert
       Swal.fire({
         icon: "success",
-        title: res.data.message,
+        title: response.message,
         showConfirmButton: false,
         background: "#181818",
         color: "#fff",
         iconColor: "#04A51E",
         timer: 1500,
       });
-      return res.data.artist;
+
+      return response.artist; // Return artist data
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
+        // Show error notification using SweetAlert
         Swal.fire({
           icon: "error",
           title: "Oops..",
@@ -59,3 +74,35 @@ export const addMusic = createAsyncThunk<IMusic, AddMusicDTO>(
     }
   }
 );
+
+// export const addMusic = createAsyncThunk<IMusic, AddMusicDTO>(
+//   "music/addMusic",
+//   async (data, thunkAPI) => {
+//     try {
+//       const res = await api.post("/music/create", data);
+//       Swal.fire({
+//         icon: "success",
+//         title: res.data.message,
+//         showConfirmButton: false,
+//         background: "#181818",
+//         color: "#fff",
+//         iconColor: "#04A51E",
+//         timer: 1500,
+//       });
+//       return res.data.artist;
+//     } catch (error) {
+//       console.log(error);
+//       if (error instanceof Error) {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops..",
+//           text: `${error.message}`,
+//           background: "#181818",
+//           color: "#fff",
+//         });
+
+//         return thunkAPI.rejectWithValue(error.message);
+//       }
+//     }
+//   }
+// );

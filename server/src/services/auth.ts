@@ -10,19 +10,33 @@ export const register = async (registerInfo: RegisterDto) => {
   );
 
   if (existedUser) {
-    throw new Error("User already exists");
+    throw {
+      status: "fail",
+      message: "Email already exists",
+    };
   }
 
   const hashedPassword = await bcrypt.hash(registerInfo.password, 10);
-  const generatedUsername = registerInfo.email.split("@")[0];
+  let generateUsername;
+  let existedUsername;
 
-  const createUser = await userRepositories.createUser({
+  do {
+    const randomMath = Math.floor(Math.random() * 1000);
+    const emailSplit = registerInfo.email.split("@")[0];
+    generateUsername = `${emailSplit}${randomMath}`;
+
+    existedUsername = await userRepositories.getUserByUsername(
+      generateUsername
+    );
+  } while (existedUsername);
+
+  const { password, ...createdUser } = await userRepositories.createUser({
     ...registerInfo,
-    username: generatedUsername,
+    username: generateUsername,
     password: hashedPassword,
   });
 
-  return createUser;
+  return createdUser;
 };
 
 export const login = async (loginInfo: LoginDto) => {
@@ -40,20 +54,30 @@ export const login = async (loginInfo: LoginDto) => {
   );
 
   if (!isValidPassword) {
-    throw new Error("User not found!");
+    throw {
+      status: "fail",
+      message: "Invalid credentials",
+    };
   }
 
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    },
-    process.env.JWT_SECRET_KEY as string,
-    {
-      expiresIn: "1d",
-    }
-  );
-  return token;
+  const { password, ...userToSign } = user;
+  const screetKey = process.env.JWT_SECRET_KEY as string;
+  const accessToken = jwt.sign(userToSign, screetKey);
+
+  return {
+    user: userToSign,
+    accessToken,
+  };
+};
+
+export const getUserLogged = async (id: number) => {
+  const user = await userRepositories.findUserById(id);
+
+  if (!user) {
+    throw {
+      status: "fail",
+      message: "Invalid user",
+    };
+  }
+  return user;
 };

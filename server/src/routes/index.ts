@@ -4,7 +4,7 @@ import profileRouter from "./profile";
 import musicRouter from "./music";
 import artistRouter from "./artist";
 
-const router = Router();
+export const router = Router();
 
 router.get("/", (req, res) => {
   res.send("ROOT ROUTER EXPRESS APP");

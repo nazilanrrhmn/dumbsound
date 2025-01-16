@@ -9,7 +9,8 @@ export const getArtist = createAsyncThunk<IArtist[], undefined>(
   async (_, thunkAPI) => {
     try {
       const res = await api.get("/artist");
-      return res.data.artist;
+      console.log("Data Artist", res.data);
+      return res.data;
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {

@@ -5,6 +5,6 @@ export const addMusicSchema = Joi.object<AddMusicDto>({
   title: Joi.string().required(),
   year: Joi.number().required(),
   artistId: Joi.number().required(),
-  fileUrl: Joi.any(),
-  thumbnails: Joi.any(),
+  fileUrl: Joi.string().uri().required(),
+  thumbnails: Joi.string().uri().required(),
 });

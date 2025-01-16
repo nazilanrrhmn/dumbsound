@@ -1,15 +1,52 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "../components/layouts/app-layout";
 import Home from "./routes/user/home";
+import Register from "./routes/auth/register";
+import Login from "./routes/auth/login";
+import AuthLayout from "../components/layouts/auth-layout";
+import { useAppDispatch } from "../hooks/use-store";
+import { useEffect } from "react";
+import { getUserLogged } from "../stores/auth/async";
+import AddArtist from "./routes/admin/add-artist";
+import AddMusic from "./routes/admin/add-music";
 
 export default function RouterApp() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getUserLogged());
+  }, []);
   const router = createBrowserRouter([
+    {
+      element: <AuthLayout />,
+      children: [
+        {
+          path: "/login",
+          element: <Login />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
+        },
+      ],
+    },
+    {
+      path: "/",
+      element: <Home />,
+    },
     {
       element: <AppLayout />,
       children: [
         {
           path: "/",
           element: <Home />,
+        },
+        {
+          path: "/add-artist",
+          element: <AddArtist />,
+        },
+        {
+          path: "/add-music",
+          element: <AddMusic />,
         },
       ],
     },

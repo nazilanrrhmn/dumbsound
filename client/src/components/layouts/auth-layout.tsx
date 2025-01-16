@@ -4,7 +4,7 @@ import Navbar from "../ui/navbar";
 import { useAppSelector } from "../../hooks/use-store";
 import { roleEnum } from "../../types/user";
 
-export default function AppLayout() {
+export default function AuthLayout() {
   const navigate = useNavigate();
   const auth = useAppSelector((state) => state.auth.entities);
   const loading = useAppSelector((state) => state.auth.loading);
@@ -15,7 +15,7 @@ export default function AppLayout() {
     if (!auth?.role) {
       navigate("/login", { replace: true }); // Use 'replace' to prevent navigation stack buildup
     } else if (auth.role === roleEnum.ADMIN) {
-      navigate("/add-music", { replace: true });
+      navigate("/add-artist", { replace: true });
     }
   }, [auth, loading, navigate]);
 

@@ -10,10 +10,11 @@ export interface RegisterDto {
   phone: string;
   address: string;
   gender: "MALE" | "FEMALE" | "OTHER";
+  role: "USER" | "ADMIN";
   username?: string;
 }
 
-export interface UpdateUserDto {
+export interface UpdateUserDto extends Record<string, any> {
   username?: string;
   email?: string;
   password?: string;
