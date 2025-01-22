@@ -10,12 +10,14 @@ export default function AuthLayout() {
   const loading = useAppSelector((state) => state.auth.loading);
 
   useEffect(() => {
-    if (loading === "pending") return; // Wait until loading is complete
+    if (loading === "pending") return;
 
     if (!auth?.role) {
-      navigate("/login", { replace: true }); // Use 'replace' to prevent navigation stack buildup
+      navigate("/login", { replace: true });
     } else if (auth.role === roleEnum.ADMIN) {
-      navigate("/add-artist", { replace: true });
+      navigate("/list-music", { replace: true });
+    } else if (auth.role === roleEnum.USER) {
+      navigate("/", { replace: true });
     }
   }, [auth, loading, navigate]);
 
@@ -24,12 +26,11 @@ export default function AuthLayout() {
       <div className="flex items-center justify-center h-screen">
         <p>Loading...</p>
       </div>
-    ); // Show a loading indicator while authentication status is pending
+    );
   }
 
   return (
     <div className="bg-zinc-950">
-      <Navbar />
       <Outlet />
     </div>
   );

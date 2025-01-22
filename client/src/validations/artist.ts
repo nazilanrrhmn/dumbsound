@@ -4,7 +4,7 @@ import { ArtistTypeEnum } from "../types/artist";
 export const addArtistSchema = z.object({
   name: z.string().min(1, "Name is required"),
   bio: z.string(),
-  age: z.string(),
+  age: z.number(),
   type: z.enum(
     [ArtistTypeEnum.SOLO, ArtistTypeEnum.DUO, ArtistTypeEnum.GROUP],
     {

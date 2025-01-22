@@ -13,9 +13,11 @@ export default function AppLayout() {
     if (loading === "pending") return; // Wait until loading is complete
 
     if (!auth?.role) {
-      navigate("/login", { replace: true }); // Use 'replace' to prevent navigation stack buildup
+      navigate("/", { replace: true });
     } else if (auth.role === roleEnum.ADMIN) {
-      navigate("/add-music", { replace: true });
+      navigate("/list-music", { replace: true });
+    } else if (auth.role === roleEnum.USER) {
+      navigate("/", { replace: true });
     }
   }, [auth, loading, navigate]);
 

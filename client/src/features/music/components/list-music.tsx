@@ -25,8 +25,8 @@ export default function ListMusic() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Music List</h1>
+    <div className="container p-4">
+      <h1 className="text-2xl font-bold mb-4">Add Music</h1>
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">

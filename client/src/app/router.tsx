@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { getUserLogged } from "../stores/auth/async";
 import AddArtist from "./routes/admin/add-artist";
 import AddMusic from "./routes/admin/add-music";
+import Music from "./routes/admin/music";
+import AdminLayout from "../components/layouts/admin-layout";
 
 export default function RouterApp() {
   const dispatch = useAppDispatch();
@@ -30,19 +32,24 @@ export default function RouterApp() {
       ],
     },
     {
-      path: "/",
-      element: <Home />,
-    },
-    {
       element: <AppLayout />,
       children: [
         {
           path: "/",
           element: <Home />,
         },
+      ],
+    },
+    {
+      element: <AdminLayout />,
+      children: [
         {
           path: "/add-artist",
           element: <AddArtist />,
+        },
+        {
+          path: "/list-music",
+          element: <Music />,
         },
         {
           path: "/add-music",

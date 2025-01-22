@@ -1,111 +1,231 @@
-// export default function Navbar() {
-//   return (
-//     <header className="flex items-center justify-between p-4 text-white bg-transparent">
-//       <div className="flex items-center ml-6">
-//         <img
-//           className="object-cover w-10 h-10"
-//           src="./logo-utama.svg"
-//           alt="Logo"
-//         />
-//         <h1 className="ml-4 text-2xl font-bold">
-//           <span className="text-red-500">Dumb</span>Sound
-//         </h1>
-//       </div>
-//       <div className="flex mr-6 space-x-4">
-//         <button className="px-4 py-2 bg-transparent border border-white rounded hover:bg-white hover:text-black">
-//           Login
-//         </button>
-//         <button className="px-4 py-2 bg-red-600 rounded hover:bg-red-500">
-//           Register
-//         </button>
-//       </div>
-//     </header>
-//   );
-// }
-
-// TODO Set Login Done - Navbar Updated Avatar
-import { useState } from "react";
-import { Menu } from "@headlessui/react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FaMusic, FaUserPlus, FaSignOutAlt, FaMoneyBill } from "react-icons/fa";
+import Swal from "sweetalert2";
+import Cookies from "js-cookie";
+import { resetAuth } from "../../stores/auth/slice";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Example state to simulate login
-  const [userAvatar, setUserAvatar] = useState(
-    "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png"
-  ); // Replace with dynamic avatar URL
+  const user = useSelector((state: RootState) => state.auth.entities);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation(); // Detect URL changes
+  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    setIsLoggedIn(false); // Simulate logout
-    console.log("User logged out");
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Close dropdown when location changes
+    setDropdownOpen(false);
+  }, [location]);
+
+  const handleToggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const handleAddMusic = () => {
+    navigate("/add-music");
+  };
+
+  const handleAddArtist = () => {
+    navigate("/add-artist");
+  };
+
+  const handlePay = () => {
+    alert("Pay clicked");
+  };
+
+  const handleLogout = async () => {
+    Swal.fire({
+      icon: "question",
+      title: "Are you sure you want to logout?",
+      showCancelButton: true,
+      confirmButtonText: "Logout",
+      background: "#1D1D1D",
+      color: "#fff",
+      iconColor: "#04A51E",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Cookies.remove("token");
+        dispatch(resetAuth());
+        navigate("/");
+        Swal.fire({
+          icon: "success",
+          title: "Logout successful",
+          background: "#1D1D1D",
+          color: "#fff",
+          iconColor: "#04A51E",
+          timer: 1500,
+          showConfirmButton: true,
+        });
+      }
+    });
   };
 
   return (
-    <header className="fixed top-0 left-0 z-50 w-full text-white bg-transparent backdrop-blur-lg">
-      <div className="flex items-center justify-between p-2 mx-auto max-w-screen-2xl">
-        {/* Logo and Title */}
-        <div className="flex items-center">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 ${
+        isScrolled ? "bg-black/80 backdrop-blur-md shadow-lg" : "bg-transparent"
+      } transition duration-300`}
+    >
+      <div className="flex items-center justify-between px-6 py-4 mx-auto max-w-7xl">
+        {/* Logo */}
+        <div className="flex items-center text-2xl font-bold">
           <img
             className="object-cover w-10 h-10"
             src="./logo-utama.svg"
             alt="Logo"
           />
-          <h1 className="ml-4 text-2xl font-bold">
+          <h1 className="ml-3 font-semibold text-white">
             <span className="text-red-500">Dumb</span>Sound
           </h1>
         </div>
 
-        {/* Right Side Menu */}
-        <div className="flex items-center justify-center">
-          {isLoggedIn ? (
-            <Menu as="div" className="relative">
-              {/* Avatar Button */}
-              <Menu.Button className="focus:outline-none">
-                <img
-                  className="object-cover w-10 h-10 rounded-full cursor-pointer"
-                  src={userAvatar} // Dynamically set user avatar
-                  alt="User Avatar"
-                />
-              </Menu.Button>
+        {/* Menu Toggle (Mobile) */}
+        <button
+          className="block text-white lg:hidden focus:outline-none"
+          onClick={handleToggleMenu}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            {menuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6h16.5m-16.5 6h16.5m-16.5 6h16.5"
+              />
+            )}
+          </svg>
+        </button>
 
-              {/* Dropdown Menu */}
-              <Menu.Items className="absolute right-0 w-40 mt-2 text-black bg-white rounded shadow-lg focus:outline-none">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? "bg-gray-100" : ""
-                      } w-full text-left px-4 py-2`}
-                    >
-                      Pay
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={handleLogout}
-                      className={`${
-                        active ? "bg-gray-100" : ""
-                      } w-full text-left px-4 py-2`}
-                    >
-                      Logout
-                    </button>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Menu>
+        {/* Main Menu */}
+        <div
+          className={`${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          } lg:translate-x-0 fixed lg:static top-0 right-0 h-full lg:h-auto w-64 lg:w-auto bg-black lg:bg-transparent text-white flex flex-col lg:flex-row items-center gap-6 p-6 lg:p-0 z-50 transition-transform duration-300 ease-in-out`}
+        >
+          {user ? (
+            <div className="flex items-center space-x-4">
+              {/* User Avatar */}
+              <div className="relative group">
+                <img
+                  src={
+                    user.profile.avatar ??
+                    "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png"
+                  }
+                  alt="Profile"
+                  className="w-12 h-12 transition duration-300 border-2 border-gray-200 rounded-full shadow-lg cursor-pointer hover:border-orange-500"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                />
+                {/* Dropdown Menu */}
+                {dropdownOpen && (
+                  <div className="absolute right-0 w-48 mt-4 text-white bg-gray-800 rounded-lg shadow-lg">
+                    {user.role === "ADMIN" && (
+                      <div className="flex flex-col">
+                        <button
+                          className="flex items-center px-4 py-2 hover:bg-gray-700"
+                          onClick={handleAddMusic}
+                        >
+                          <FaMusic className="mr-2 text-orange-500" />
+                          Add Music
+                        </button>
+                        <button
+                          className="flex items-center px-4 py-2 hover:bg-gray-700"
+                          onClick={handleAddArtist}
+                        >
+                          <FaUserPlus className="mr-2 text-orange-500" />
+                          Add Artist
+                        </button>
+                      </div>
+                    )}
+
+                    {user.role === "USER" && (
+                      <div className="flex flex-col">
+                        <button
+                          className="flex items-center px-4 py-2 hover:bg-gray-700"
+                          onClick={handlePay}
+                        >
+                          <FaMoneyBill className="mr-2 text-orange-500" />
+                          Pay
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="my-2 border-t border-gray-700"></div>
+                    <div className="flex flex-col">
+                      <button
+                        className="flex items-center px-4 py-2 hover:bg-gray-700"
+                        onClick={handleLogout}
+                      >
+                        <FaSignOutAlt className="mr-2 text-orange-500" />
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Welcome back,</p>
+                <p className="text-lg font-semibold text-gray-100">
+                  {user.username}
+                </p>
+              </div>
+            </div>
           ) : (
-            // Login and Register Buttons (Hidden when logged in)
             <>
-              <button className="px-4 py-2 bg-transparent border border-white rounded hover:bg-white hover:text-black">
+              <button
+                className="w-full px-4 py-2 font-medium text-white bg-transparent border border-white rounded-lg lg:w-auto hover:border-orange-500 hover:bg-orange-500"
+                onClick={() => navigate("/login")}
+              >
                 Login
               </button>
-              <button className="px-4 py-2 bg-red-600 rounded hover:bg-red-500">
+              <button
+                className="w-full px-4 py-2 font-medium text-white bg-orange-600 rounded-lg lg:w-auto hover:bg-orange-500"
+                onClick={() => navigate("/register")}
+              >
                 Register
               </button>
             </>
           )}
         </div>
+
+        {/* Backdrop */}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={closeMenu}
+          ></div>
+        )}
       </div>
-    </header>
+    </nav>
   );
 }

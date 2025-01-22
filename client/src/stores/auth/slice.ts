@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getUserLogged } from "./async";
 import { IUser } from "@/types/user";
 
@@ -17,7 +17,14 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setAuth: (state, action: PayloadAction<AuthState["entities"]>) => {
+      state.entities = action.payload;
+    },
+    resetAuth: (state) => {
+      state.entities = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUserLogged.pending, (state) => {
       state.loading = "pending";
@@ -33,4 +40,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { setAuth, resetAuth } = authSlice.actions;
 export default authSlice.reducer;

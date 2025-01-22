@@ -1,14 +1,14 @@
 export default function Header() {
   return (
-    <section
-      className="relative bg-cover bg-center h-[600px] text-center text-white flex flex-col justify-center items-center"
-      style={{ backgroundImage: "url('./jumbotron.png')" }}
-    >
-      <h2 className="text-4xl font-bold mb-2">Connect on DumbSound</h2>
-      <p className="text-lg">
-        Discover, stream, and share a constantly expanding mix of music from
-        emerging and major artists around the world
-      </p>
+    <section className="mb-16 relative text-white h-[650px] flex flex-col justify-center items-center text-center">
+      <div className="absolute inset-0 bg-[url('./jumbotron.png')] bg-cover bg-center opacity-80"></div>
+      <div className="relative z-10">
+        <h1 className="text-4xl font-bold">Connect on DumbSound</h1>
+        <p className="mt-4 text-lg">
+          Discover, Stream, and share a constantly expanding mix of music from
+          emerging and major artists around the world.
+        </p>
+      </div>
     </section>
   );
 }
